@@ -1,0 +1,67 @@
+{
+    "properties": {
+        "displayName": "Block pods from using the default namespace in a Kubernetes cluster (custom policy)",
+        "policyType": "Custom",
+        "mode": "Microsoft.Kubernetes.Data",
+        "description": "This policy blocks pods from usaging the default namespace in a Kubernetes cluster. For instructions on using this policy, please go to https://aka.ms/kubepolicydoc.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Kubernetes"
+        },
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Enable or disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "audit",
+                    "deny",
+                    "disabled"
+                ],
+                "defaultValue": "audit"
+            },
+            "excludedNamespaces": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Namespace exclusions",
+                    "description": "List of Kubernetes namespaces to exclude from policy evaluation. Providing a value for this parameter is optional."
+                },
+                "defaultValue": [
+                    "kube-system",
+                    "gatekeeper-system",
+                    "azure-arc"
+                ]
+            }
+        },
+        "policyRule": {
+            "if": {
+                "field": "type",
+                "in": [
+                    "AKS Engine",
+                    "Microsoft.Kubernetes/connectedClusters",
+                    "Microsoft.ContainerService/managedClusters"
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "templateInfo": {
+                        "sourceType": "Base64Encoded",
+                        "content": "YXBpVmVyc2lvbjogdGVtcGxhdGVzLmdhdGVrZWVwZXIuc2gvdjFiZXRhMQpraW5kOiBDb25zdHJhaW50VGVtcGxhdGUKbWV0YWRhdGE6CiAgbmFtZTogazhzYXp1cmVibG9ja2RlZmF1bHRjdXN0b20Kc3BlYzoKICBjcmQ6CiAgICBzcGVjOgogICAgICBuYW1lczoKICAgICAgICBraW5kOiBLOHNBenVyZUJsb2NrRGVmYXVsdEN1c3RvbQogIHRhcmdldHM6CiAgICAtIHRhcmdldDogYWRtaXNzaW9uLms4cy5nYXRla2VlcGVyLnNoCiAgICAgIHJlZ286IHwKICAgICAgICBwYWNrYWdlIGs4c2F6dXJlYmxvY2tkZWZhdWx0Y3VzdG9tCgogICAgICAgIHZpb2xhdGlvblt7Im1zZyI6IG1zZ31dIHsKICAgICAgICAgIG9iaiA6PSBpbnB1dC5yZXZpZXcub2JqZWN0CiAgICAgICAgICBpc19kZWZhdWx0X25hbWVzcGFjZShvYmoubWV0YWRhdGEpCiAgICAgICAgICBtc2cgOj0gc3ByaW50ZigiVXNhZ2Ugb2YgdGhlIGRlZmF1bHQgbmFtZXNwYWNlIGlzIG5vdCBhbGxvd2VkLCBuYW1lOiAldiwga2luZDogJXYiLCBbb2JqLm1ldGFkYXRhLm5hbWUsIG9iai5raW5kXSkKICAgICAgICB9CgogICAgICAgIGlzX2RlZmF1bHRfbmFtZXNwYWNlKG1ldGFkYXRhKSB7CiAgICAgICAgICBub3QgbWV0YWRhdGEubmFtZXNwYWNlCiAgICAgICAgfQoKICAgICAgICBpc19kZWZhdWx0X25hbWVzcGFjZShtZXRhZGF0YSkgewogICAgICAgICAgbWV0YWRhdGEubmFtZXNwYWNlID09ICJkZWZhdWx0IgogICAgICAgIH0K"
+                    },
+                    "values": {
+                        "excludedNamespaces": "[parameters('excludedNamespaces')]"
+                    },
+                    "apiGroups": [
+                        ""
+                    ],
+                    "kinds": [
+                        "Pod"
+                    ]
+                }
+            }
+        }
+    }
+}
